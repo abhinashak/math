@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Multiplication</title>
+
+    <style>
+        
+        input.iStep {
+          width:24px; 
+          height:24px;
+          padding: 0 0 0 0;
+          display:none;
+        }
+
+        div.divContent {
+          width:352px; 
+          display:none; 
+          border:1px solid #dcdcdc;
+        }
+
+        td.tdQuestion {
+          font-size:24px; 
+          padding-left:24px; 
+          padding-right:24px;
+          text-align: right;
+        }
+
+        td.iStepTd {
+          padding-left: 60px;
+    
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+      var firstNo;
+      var secondNo;
+      var multiResult;
+
+      var maxDifficulty = 10;
+      var difficulty = 3;
+      var consecutiveCorrect = 0;
+      var consecutiveInCorrect = 0;
+
+      var maxGridRows = 5;
+      var maxGridCols = 8;
+      var gridRows = 3;
+      var gridCols = 8;
+
+      var scoreWeight = 1;
+      var ansCorrect = 0;
+      var ansWrong = 0;
+
+      function show() {
+        
+        var q1 = 9;
+        var q2 = 9;
+        var q3 = 9;
+        var q4 = 9;
+        if ( difficulty > maxDifficulty) difficulty = maxDifficulty;
+        if ( difficulty < 1) difficulty = 1;
+          //document.getElementById("txtDifficulty").innerHTML = difficulty; 
+        switch ( difficulty ) {
+
+          case 1: //Single digit
+            scoreWeight = 1;
+            q1 = 0;
+            q2 = Math.floor(Math.random() * 6);
+            if ( q2 < 2) q2= 2 + q2;
+            q3 =0;
+            q4 = Math.floor(Math.random() * 6);
+            if ( q4 < 2) q4= 2 + q2;
+            break;
+          
+          case 2: //Single digit
+            scoreWeight = 5;
+            q1 = 0;
+            q2 = Math.floor(Math.random() * 10);
+            if ( q2 <= 5) q2 = q2 + 4;
+            if ( q2 <= 5) q2 = q2 + 4;
+            q3 =0;
+            q4 = Math.floor(Math.random() * 10);
+            if ( q4 <= 5) q4 = q4 + 4;
+            if ( q4 <= 5) q4 = q4 + 4;
+            break;
+          
+          case 3: //One Double digit 0-5
+            scoreWeight = 10;
+            q1 = 10 * (Math.floor(Math.random() * 6));
+            if ( q1 < 10 ) q1 = 10;
+            q2 = Math.floor(Math.random() * 6);
+            q3 =0;
+            q4 = Math.floor(Math.random() * 10);
+            if ( q4 < 2 ) q4=2 + q4;
+            break;
+          
+          case 4: //Both Double digit, But < 9
+            scoreWeight = 12;
+            q1 = 10 * (Math.floor(Math.random() * 6));
+            if ( q1 < 10 ) q1 = 10;
+            q2 = Math.floor(Math.random() * 6);
+
+            q3 = 10 * (Math.floor(Math.random() * 6));
+            if ( q3 < 10 ) q3 = 10;
+            q4 = Math.floor(Math.random() * 6);
+            break;
+          
+          case 5: //Both Double digit, 1 Number has 6-9
+            scoreWeight = 25;
+            q1 = 10 * (Math.floor(Math.random() * 6));
+            q2 = Math.floor(Math.random() * 10);
+            if ( q1 < 10 ) q1 = 10;
+            if ( q2 <= 5) q2 = q2 + 4;
+            if ( q2 <= 5) q2 = q2 + 4;
+
+            q3 = 10 * (Math.floor(Math.random() * 6));
+            if ( q3 < 10 ) q3 = 10;
+            q4 = Math.floor(Math.random() * 6);
+            break;
+
+          case 6: //Both Double digit, 2 Number has 6-9
+            scoreWeight = 50;
+            q1 = 10 * Math.floor(Math.random() * 10);
+            if ( q1 < 50) q1 = q1 + 50;
+            q2 = Math.floor(Math.random() * 9);
+            if ( q2 <= 5) q2 = q2 + 4;
+            if ( q2 <= 5) q2 = q2 + 4;
+            
+            q3 = 10 * Math.floor(Math.random() * 10);
+            if ( q3 < 50) q3 = q3 + 50;
+            q4 = Math.floor(Math.random() * 9);
+            if ( q4 <= 5) q4 = q4 + 4;
+            if ( q4 <= 5) q4 = q4 + 4;
+            break;
+
+          case 7: //One Tripile digit, Other 2 digit
+            scoreWeight = 100;
+            q1 = 100 * Math.floor(Math.random() * 10);
+            if ( q1 < 100) q1 = q1 + 100;
+            q2 = Math.floor(Math.random() * 99);
+            
+            q3 = 10 * Math.floor(Math.random() * 10);
+            if ( q3 < 50) q3 = q3 + 50;
+            q4 = Math.floor(Math.random() * 9);
+            if ( q4 <= 5) q4 = q4 + 4;
+            if ( q4 <= 5) q4 = q4 + 4;
+            break;
+          
+          case 8: //Both Tripile digit
+            scoreWeight = 1000;
+            q1 = 100 * Math.floor(Math.random() * 10);
+            if ( q1 < 100) q1 = q1 + 100;
+            q2 = Math.floor(Math.random() * 99);
+            
+            q3 = 100 * Math.floor(Math.random() * 10);
+            if ( q3 < 100) q3 = q3 + 100;
+            q4 = Math.floor(Math.random() * 99);
+            break;
+
+          case 9: //One Quadraple, One triple
+            scoreWeight = 5000;
+            q1 = 1000 * Math.floor(Math.random() * 10);
+            if ( q1 < 1000) q1 = q1 + 1000;
+            q2 = Math.floor(Math.random() * 999);
+            
+            q3 = 100 * Math.floor(Math.random() * 10);
+            if ( q3 < 100) q3 = q3 + 100;
+            q4 = Math.floor(Math.random() * 99);
+            break;
+
+          case 10: //Both Quadraple
+            scoreWeight = 10000;
+            q1 = 1000 * Math.floor(Math.random() * 10);
+            if ( q1 < 1000) q1 = q1 + 1000;
+            q2 = Math.floor(Math.random() * 999);
+            
+            q3 = 1000 * Math.floor(Math.random() * 10);
+            if ( q3 < 1000) q3 = q3 + 1000;
+            q4 = Math.floor(Math.random() * 999);
+            break;
+        }
+
+        firstNo = q1 +q2; 
+        secondNo = q3 + q4;
+
+        if ( secondNo > firstNo) {
+          var temp = secondNo;
+          secondNo = firstNo;
+          firstNo = temp;
+        }
+
+        if ( firstNo < 10 && secondNo < 10) {
+          gridRows = 1; gridCols = 2;
+        } else if ( firstNo < 10) { 
+          gridRows = 1; gridCols = 3;
+        } else if ( firstNo < 100) { 
+          gridRows = 3; gridCols = 4;
+        } else if (  firstNo < 100) { 
+          gridRows = 3; gridCols = 5;
+        } else if ( firstNo < 1000) { 
+          gridRows = 4; gridCols = 6;
+        } else if ( firstNo < 10000) { 
+          gridRows = 5; gridCols = 8;
+        }
+
+        document.getElementById("firstNoId").innerHTML = firstNo;
+        document.getElementById("secondNoId").innerHTML = secondNo; 
+        multiResult = firstNo * secondNo;
+
+        var elemId = "";
+        for ( var r=1; r<=maxGridRows; r++) {
+          for ( var c=1; c<=maxGridCols; c++) {
+            elemId = "r" + r + "c" + c;
+            var elemO = document.getElementById(elemId);
+            if ( r > gridRows || c > gridCols ) {
+              elemO.style.display = "none";    
+            } else {
+              elemO.value = "";
+              elemO.style.display = "inline";    
+            }
+          }
+        }
+
+        for ( var r=3; r<=maxGridRows; r++) {
+          elemId = "divide" + r ;
+          document.getElementById(elemId).style.display = (r == gridRows) ? "block" : "none" ; 
+          elemId = "divideLine" + r ;
+          var elemO = document.getElementById(elemId);
+          elemO.style.width =  (( gridCols * 32 ) + 96 ) + "px" ; 
+          var underText = "";
+          for ( var t=1; t<=gridCols; t++) {
+            underText += "____";
+          }  
+          elemO.innerHTML = underText;
+        }
+
+        var rootEl = document.getElementById("root");
+        rootEl.style.width = ((gridCols * 32) + 96 ) + "px";
+        rootEl.style.display = "block";
+        //document.getElementById("btnShow").style.display = "none";
+        //document.getElementById("btnVerify").innerText =  "Verify";
+
+        // TODO Focus the right element document.getElementById("r1c4").style.focus = 1;
+
+      }
+
+      function verify() {
+          var resultText = "";
+          for ( var c=1; c<=gridCols; c++) {
+            elemId = "r" + gridRows + "c" + c;
+            resultText += document.getElementById(elemId).value;    
+          }
+          var resultInt = parseInt(resultText);
+
+          if ( resultText == "") {
+            document.getElementById("btnVerify").innerText =  "Verify";
+          } else {
+            if ( resultInt == multiResult) {
+
+              ansCorrect = ansCorrect + (scoreWeight);
+              document.getElementById("spanCorrect").innerText =  ansCorrect; 
+              
+
+              document.getElementById("btnShow").innerText =  "Correct, Show New"; 
+              document.getElementById("root").style.display =  "none"; 
+              document.getElementById("btnShow").style.display =  "block"; 
+              document.getElementById("btnVerify").innerText =  "Verify";
+
+              consecutiveInCorrect = 0;
+
+              consecutiveCorrect++;
+              if ( consecutiveCorrect >= maxDifficulty ) {
+                difficulty++;
+                if ( difficulty >= maxDifficulty) difficulty = maxDifficulty;
+                consecutiveCorrect = 0;
+              }
+
+            } else  {
+              ansWrong = ansWrong + (scoreWeight);
+              document.getElementById("spanWrong").innerText =  ansWrong; 
+              
+              document.getElementById("btnVerify").innerText =  "Wrong,  Try Again"; 
+              
+              document.getElementById("btnVerify").innerText =  "Wrong,  Try Again"; 
+              consecutiveCorrect = 0;
+              consecutiveInCorrect++;
+              if ( consecutiveInCorrect >= 3 ) {
+                difficulty--;
+                if ( difficulty < 1) difficulty = 1;
+                consecutiveInCorrect = 0;
+                //document.getElementById("btnShow").innerText =  "Incorrect, Show Easy(" + difficulty + ")"; 
+                document.getElementById("root").style.display =  "none"; 
+                //document.getElementById("btnShow").style.display =  "block"; 
+                //document.getElementById("btnVerify").innerText =  "Verify";
+              }
+            }
+          }
+      }
+
+
+function GetURLParameter(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}
+    </script>
+  </head>
+  <body onload="difficulty = parseInt( GetURLParameter('difficulty') ); show();">
+    <center>
+        
+        <div id="root" class="divContent">
+
+          <table style="width:100%">
+            <tr>
+              <td class="tdQuestion" rowspan="2">X</td>
+              <td class="tdQuestion" id="firstNoId">??</td>
+            </tr>            
+            <tr>
+                <td class="tdQuestion" id="secondNoId">??</td>
+            </tr>            
+          </table>
+          
+          <table style="width:90%" >
+
+            <tr id="tabSteps1">
+                <td class="iStepTd">
+                <hr />
+                <input class="iStep" maxlength="1" type="text" id="r1c1" />
+                <input class="iStep" maxlength="1" type="text" id="r1c2" />
+                <input class="iStep" maxlength="1" type="text" id="r1c3" />
+                <input class="iStep" maxlength="1" type="text" id="r1c4" />
+                <input class="iStep" maxlength="1" type="text" id="r1c5" />
+                <input class="iStep" maxlength="1" type="text" id="r1c6" />
+                <input class="iStep" maxlength="1" type="text" id="r1c7" />
+                <input class="iStep" maxlength="1" type="text" id="r1c8" />
+              </td>
+            </tr>
+
+            <tr id="tabSteps2" >
+              <td class="iStepTd">
+                  <input class="iStep" maxlength="1" type="text" id="r2c1" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c2" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c3" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c4" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c5" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c6" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c7" />
+                  <input class="iStep" maxlength="1" type="text" id="r2c8" />
+                </td>
+            </tr>
+
+            <tr id="divide3"> 
+              <td class="iStepTd">
+                <span id="divideLine3" style="text-align:right; width:100%"> _________________________________ </span>
+              </td>
+            </tr>
+
+            <tr id="tabSteps3" >
+                <td class="iStepTd">
+                    <input class="iStep" maxlength="1" type="text" id="r3c1" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c2" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c3" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c4" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c5" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c6" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c7" />
+                    <input class="iStep" maxlength="1" type="text" id="r3c8" />
+                  </td>
+              </tr>
+              
+              <tr id="divide4"> <td class="iStepTd"> <span id="divideLine4" style="text-align:right; width:100%"> _________________________________ </span> </td>  </tr>
+              <tr id="tabSteps4" >
+                  <td class="iStepTd">
+                      <input class="iStep" maxlength="1" type="text" id="r4c1" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c2" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c3" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c4" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c5" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c6" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c7" />
+                      <input class="iStep" maxlength="1" type="text" id="r4c8" />
+                    </td>
+                </tr>
+  
+            <tr id="divide5"> <td class="iStepTd"> <span id="divideLine5" style="text-align:right; width:100%"> _________________________________ </span>  </td>  </tr>
+            <tr id="tabSteps5">
+                <td class="iStepTd">
+                    <input class="iStep" maxlength="1" type="text" id="r5c1" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c2" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c3" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c4" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c5" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c6" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c7" />
+                    <input class="iStep" maxlength="1" type="text" id="r5c8" />
+                  </td>
+            </tr>
+
+
+              <!--
+            <tr>
+                <td align="middle">
+                
+                    <br />
+                    <button id="btnVerify" style="font-size:18px" type="button" onclick='verify();' >Verify</button>
+                    <br /><br />
+                    <button id="btnEasy" type="button" onclick='difficulty--;show();' style="font-size:10px" >Easy</button>
+                    <span style="font-size:12px; color:#000" id="txtDifficulty"></span>
+                    <button id="btnHard" type="button" onclick='difficulty++;show();' style="font-size:10px" >Hard</button>
+                    <br /><br />
+                    <span id="spanCorrect">0</span> | 
+                    <span id="spanWrong">0</span>
+                
+                  </td>
+            </tr>  
+          -->
+
+          </table> 
+
+      </div>
+  </center>
+  </body>
+</html>
